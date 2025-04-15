@@ -1,15 +1,26 @@
 import { useState } from 'react';
-import logo from '../assets/images/logo.png'; // Asegúrate de que esta ruta sea correcta
+import logo from '../assets/images/logo.png';
 import './Login.css';
 
-function Login() {
+function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Login attempt:', username, password);
+    
+    // Validación de usuarios
+    if (username === 'MASTER' && password === '789456123') {
+      onLogin('administrador');
+      setError('');
+    } else if (username === 'BETA' && password === '123456789') {
+      onLogin('operario');
+      setError('');
+    } else {
+      setError('Usuario o contraseña incorrectos');
+    }
   };
 
   return (
@@ -19,6 +30,7 @@ function Login() {
           <img src={logo} alt="Logo" />
         </div>
         <h2>Login Here</h2>
+        {error && <div className="error-message">{error}</div>}
         <div className="form-group">
           <input
             type="text"

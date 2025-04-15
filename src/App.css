@@ -40,3 +40,19 @@
 .read-the-docs {
   color: #888;
 }
+
+.app {
+  min-height: 100vh;
+  display: flex;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 250px;
+  padding: 2rem;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar.closed + .main-content {
+  margin-left: 60px;
+}
