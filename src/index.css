@@ -28,6 +28,9 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-image: url('./assets/images/Fondo_Tecon.png');
+  background-size: cover;
+  background-position: center;
 }
 
 h1 {
