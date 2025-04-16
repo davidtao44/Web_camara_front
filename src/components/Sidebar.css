@@ -87,3 +87,8 @@
 .nav-item:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+
+.nav-item span,
+.logout-button span {
+  font-weight: normal !important;
+}
