@@ -19,6 +19,9 @@ function Login({ onLogin }) {
     } else if (username === 'BETA' && password === '123456789') {
       onLogin('supervisor');
       setError('');
+    } else if (username === 'ALFA' && password === '12') {
+      onLogin('operario');
+      setError('');
     } else {
       setError('Usuario o contraseña incorrectos');
     }
