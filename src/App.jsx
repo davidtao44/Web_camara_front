@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
+import Register from './components/Register';
 import Sidebar from './components/Sidebar';
 import AddUser from './components/AddUser';
 import UserList from './components/UserList';
@@ -47,7 +49,13 @@ function App() {
           </div>
         </>
       ) : (
-        <Login onLogin={handleLogin} />
+        <Router>
+          <Routes>
+            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<Login onLogin={handleLogin} />} />
+            <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          </Routes>
+        </Router>
       )}
     </div>
   );

@@ -177,3 +177,26 @@
   background: rgba(255, 0, 0, 0.1);
   border-radius: 4px;
 }
+
+
+/* Add these styles to your existing Login.css file */
+
+.register-form {
+  max-height: none;
+  overflow-y: auto;
+}
+
+.register-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  font-size: 16px;
+  color: #333;
+}
+
+.register-form select:focus {
+  outline: none;
+  border-color: #4a90e2;
+}

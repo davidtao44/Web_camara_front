@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
 import './Login.css';
 
@@ -54,7 +55,7 @@ function Login({ onLogin }) {
         </div>
         <button type="submit">Log In</button>
         <div className="forgot-password">
-          <a href="#">Forgot your Password?</a>
+          <Link to="/register">¿No tienes una cuenta? Regístrate aquí</Link>
         </div>
       </form>
     </div>
