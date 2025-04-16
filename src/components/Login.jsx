@@ -8,18 +8,23 @@ function Login({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
+  // En tu componente Login.jsx
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Validación de usuarios
-    if (username === 'MASTER' && password === '789456123') {
-      onLogin('administrador');
-      setError('');
-    } else if (username === 'BETA' && password === '123456789') {
-      onLogin('operario');
-      setError('');
+    // Verificación básica
+    if (!username || !password) {
+      setError('Por favor ingrese usuario y contraseña');
+      return;
+    }
+    
+    // Aquí simularemos que cualquier usuario que contenga "admin" es administrador
+    if (username.includes('admin')) {
+      onLogin('administrador'); // Asegúrate de usar el mismo valor que está en ROLES.ADMIN
+    } else if (username.includes('super')) {
+      onLogin('supervisor');
     } else {
-      setError('Usuario o contraseña incorrectos');
+      onLogin('operario');
     }
   };
 
@@ -54,7 +59,7 @@ function Login({ onLogin }) {
         </div>
         <button type="submit">Log In</button>
         <div className="forgot-password">
-          <a href="#">Forgot your Password?</a>
+          <a href="/register">No tiene cuenta?, Registrese.</a>
         </div>
       </form>
     </div>
