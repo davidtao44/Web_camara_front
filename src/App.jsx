@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
 import Sidebar from './components/Sidebar';
+import Dashboard from './components/Dashboard'; // Import the Dashboard component
 import AddUser from './components/AddUser';
 import UserList from './components/UserList';
 import AttendeeList from './components/AttendeeList';
@@ -41,6 +42,7 @@ function App() {
             onLogout={handleLogout}
           />
           <div className="main-content">
+            {currentPage === 'dashboard' && <Dashboard userRole={userRole} />}
             {currentPage === 'addUser' && <AddUser />}
             {currentPage === 'userList' && <UserList />}
             {currentPage === 'attendeeList' && <AttendeeList />}

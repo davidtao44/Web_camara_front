@@ -15,6 +15,12 @@ function Sidebar({ role, onNavigate, onLogout }) {
       
       <div className="sidebar-content">
         <nav className="sidebar-nav">
+          {/* Dashboard button for all roles */}
+          <button className="nav-item" onClick={() => onNavigate('dashboard')}>
+            <i className="fas fa-home"></i>
+            <span>Dashboard</span>
+          </button>
+
           {role === 'administrador' && (
             <>
               <button className="nav-item" onClick={() => onNavigate('userList')}>
@@ -43,13 +49,6 @@ function Sidebar({ role, onNavigate, onLogout }) {
             <button className="nav-item" onClick={() => onNavigate('attendeeList')}>
               <i className="fas fa-users"></i>
               <span>Lista de Asistentes</span>
-            </button>
-          )}
-
-          {role === 'operario' && (
-            <button className="nav-item" onClick={() => onNavigate('dashboard')}>
-              <i className="fas fa-home"></i>
-              <span>Dashboard</span>
             </button>
           )}
         </nav>
