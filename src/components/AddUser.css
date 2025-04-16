@@ -1,0 +1,45 @@
+.add-user-container {
+  padding: 2rem;
+}
+
+.add-user-form {
+  max-width: 400px;
+  background: rgba(1, 1, 15, 0.575);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 8px;
+  color: white;
+}
+
+.add-user-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.add-user-form input,
+.add-user-form select {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.add-user-form select option {
+  background-color: #1a1a1a;
+}
+
+.add-user-form button {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #30c645;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.add-user-form button:hover {
+  background-color: #28a33a;
+}

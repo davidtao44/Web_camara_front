@@ -1,0 +1,44 @@
+.add-attendee-container {
+  padding: 2rem;
+}
+
+.add-attendee-form {
+  max-width: 400px;
+  background: rgba(1, 1, 15, 0.575);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 8px;
+  color: white;
+}
+
+.add-attendee-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.add-attendee-form input {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.add-attendee-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.add-attendee-form button {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #30c645;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.add-attendee-form button:hover {
+  background-color: #28a33a;
+}
