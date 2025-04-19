@@ -43,3 +43,34 @@
 .add-user-form button:hover {
   background-color: #28a33a;
 }
+
+/* Message styles for success and error notifications */
+.message {
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.message.success {
+  background-color: rgba(48, 198, 69, 0.2);
+  color: #30c645;
+  border: 1px solid #30c645;
+}
+
+.message.error {
+  background-color: rgba(255, 68, 68, 0.2);
+  color: #ff4444;
+  border: 1px solid #ff4444;
+}
+
+/* Disabled button style */
+.add-user-form button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Loading spinner style */
+.add-user-form button i {
+  margin-right: 5px;
+}
