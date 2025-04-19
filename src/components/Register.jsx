@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import logo from '../assets/images/logo2-2.png';
 import './Login.css'; // Reusing the same CSS file as Login
 
 function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -15,6 +17,7 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,15 +30,18 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
     
     // Basic validation
     if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
       setError('Por favor complete todos los campos');
+      setLoading(false);
       return;
     }
     
     if (formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden');
+      setLoading(false);
       return;
     }
     
@@ -43,17 +49,32 @@ function Register() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('Por favor ingrese un correo electrónico válido');
+      setLoading(false);
       return;
     }
 
-    // Here you would typically call your API to register the user
     try {
-      // Placeholder for API call
-      console.log('Registering user:', formData);
+      // Call the backend API to register the user
+      const response = await axios.post('http://localhost:8000/users/', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
+      });
+      
+      console.log('Usuario registrado exitosamente:', response.data);
+      
       // Redirect to login after successful registration
-      window.location.href = '/login';
-    } catch (err) {
-      setError('Error al registrar usuario. Por favor intente nuevamente.');
+      navigate('/login');
+    } catch (error) {
+      console.error('Error al registrar usuario:', error);
+      if (error.response && error.response.data) {
+        setError(error.response.data.detail || 'Error al registrar usuario');
+      } else {
+        setError('Error al conectar con el servidor. Por favor intente nuevamente.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -128,7 +149,9 @@ function Register() {
           </select>
         </div>
         
-        <button type="submit">Registrarse</button>
+        <button type="submit" disabled={loading}>
+          {loading ? <i className="fas fa-spinner fa-spin"></i> : 'Registrarse'}
+        </button>
         
         <div className="forgot-password">
           <Link to="/login">¿Ya tienes una cuenta? Inicia sesión</Link>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import logo from '../assets/images/logo2-2.png';
 import './Login.css';
 
@@ -8,22 +9,38 @@ function Login({ onLogin }) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
     
-    // Validación de usuarios
-    if (username === 'MASTER' && password === '789456123') {
-      onLogin('administrador');
+    try {
+      // Call the backend API to authenticate the user
+      const response = await axios.post('http://localhost:8000/token', 
+        new URLSearchParams({
+          'username': username,
+          'password': password
+        }), 
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }
+      );
+      
+      // Store the token in localStorage
+      localStorage.setItem('accessToken', response.data.access_token);
+      
+      // Call the onLogin function with the user's role
+      onLogin(response.data.role);
       setError('');
-    } else if (username === 'BETA' && password === '123456789') {
-      onLogin('supervisor');
-      setError('');
-    } else if (username === 'ALFA' && password === '12') {
-      onLogin('operario');
-      setError('');
-    } else {
-      setError('Usuario o contraseña incorrectos');
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
+      setError(error.response?.data?.detail || 'Usuario o contraseña incorrectos');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,7 +73,9 @@ function Login({ onLogin }) {
             <i className={showPassword ? "fas fa-unlock" : "fas fa-lock"}></i>
           </span>
         </div>
-        <button type="submit">Log In</button>
+        <button type="submit" disabled={loading}>
+          {loading ? <i className="fas fa-spinner fa-spin"></i> : 'Log In'}
+        </button>
         <div className="forgot-password">
           <Link to="/register">¿No tienes una cuenta? Regístrate aquí</Link>
         </div>
