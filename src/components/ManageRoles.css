@@ -1,39 +1,128 @@
 .manage-roles-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 2rem;
+}
+
+.manage-roles-container h2 {
+  margin-bottom: 1.5rem;
+  color: white;
 }
 
 .roles-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-width: 600px;
+  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 800px;
 }
 
 .role-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   background: rgba(1, 1, 15, 0.575);
   backdrop-filter: blur(10px);
   border-radius: 8px;
   color: white;
+  width: 100%;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .user-name {
   font-size: 1.1rem;
 }
 
+.user-email {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
 .role-select {
-  padding: 0.5rem;
+  padding: 0.6rem;
   border: none;
   border-radius: 4px;
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.role-select:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .role-select option {
   background-color: #1a1a1a;
+}
+
+.error-message {
+  color: #ff4444;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: rgba(255, 0, 0, 0.1);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.success-message {
+  color: #30c645;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: rgba(48, 198, 69, 0.1);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.no-users {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  background: rgba(1, 1, 15, 0.3);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.refresh-button {
+  padding: 0.8rem;
+  background-color: #30c645;
   color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 150px;
+  transition: background-color 0.2s ease;
+  margin-top: 1rem;
+}
+
+.refresh-button:hover {
+  background-color: #28a33a;
+}
+
+.refresh-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }

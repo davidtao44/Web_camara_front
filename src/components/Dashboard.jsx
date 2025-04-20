@@ -3,7 +3,6 @@ import './Dashboard.css';
 
 function Dashboard({ userRole }) {
   const [cameras, setCameras] = useState([]);
-  const [onlineUsers, setOnlineUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCamera, setSelectedCamera] = useState(null);
 
@@ -17,22 +16,13 @@ function Dashboard({ userRole }) {
     { id: 6, name: 'Cámara 6', location: 'Sala de Juntas', status: 'active', lastActivity: '10 min ago' },
   ];
 
-  // Mock data for online users
-  const mockOnlineUsers = [
-    { id: 1, name: 'Juan Pérez', role: 'supervisor', lastActive: '2 min ago', status: 'online' },
-    { id: 2, name: 'María López', role: 'operario', lastActive: '5 min ago', status: 'online' },
-    { id: 3, name: 'Carlos Rodríguez', role: 'operario', lastActive: '1 hr ago', status: 'away' },
-    { id: 4, name: 'Ana Martínez', role: 'supervisor', lastActive: 'Just now', status: 'online' },
-  ];
-
   useEffect(() => {
     // Simulate API calls to fetch data
     const fetchData = async () => {
       try {
-        // In a real app, these would be API calls
+        // In a real app, this would be an API call
         setTimeout(() => {
           setCameras(mockCameras);
-          setOnlineUsers(mockOnlineUsers);
           setLoading(false);
         }, 1000);
       } catch (error) {
@@ -71,17 +61,10 @@ function Dashboard({ userRole }) {
                   <p>Cámaras Activas</p>
                 </div>
               </div>
-              <div className="stat-card">
-                <i className="fas fa-users"></i>
-                <div className="stat-info">
-                  <h3>{onlineUsers.filter(u => u.status === 'online').length}</h3>
-                  <p>Usuarios en Línea</p>
-                </div>
-              </div>
             </div>
           </div>
 
-          <div className="dashboard-content">
+          <div className="dashboard-content-full">
             <div className="cameras-section">
               <div className="section-header">
                 <h2>Cámaras de Vigilancia</h2>
@@ -112,32 +95,6 @@ function Dashboard({ userRole }) {
                       <p><i className="fas fa-map-marker-alt"></i> {camera.location}</p>
                       <p><i className="fas fa-clock"></i> {camera.lastActivity}</p>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="users-section">
-              <div className="section-header">
-                <h2>Usuarios en Línea</h2>
-              </div>
-              <div className="users-list">
-                {onlineUsers.map(user => (
-                  <div key={user.id} className={`user-card ${user.status}`}>
-                    <div className="user-avatar">
-                      <i className="fas fa-user"></i>
-                    </div>
-                    <div className="user-info">
-                      <h3>{user.name}</h3>
-                      <p className="user-role">
-                        <i className="fas fa-id-badge"></i> 
-                        {user.role === 'supervisor' ? 'Supervisor' : 'Operario'}
-                      </p>
-                      <p className="user-activity">
-                        <i className="fas fa-clock"></i> {user.lastActive}
-                      </p>
-                    </div>
-                    <div className="user-status-indicator"></div>
                   </div>
                 ))}
               </div>
