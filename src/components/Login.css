@@ -1,10 +1,10 @@
 .login-container {
   display: flex;
-  justify-content: flex-start;  /* Cambiado de center a flex-start */
+  justify-content: center;
   align-items: center;
-  min-height: 70vh;
+  min-height: 100vh;
   padding: 30px;
-  margin-right: 500px;  /* Agregado para dar espacio desde el borde izquierdo */
+  margin-left: 100px; /* Añadido margen izquierdo para mover hacia la derecha */
 }
 
 .login-form {
@@ -15,6 +15,25 @@
   width: 100%;
   max-width: 350px;
   color: white;
+}
+
+/* New: Separate container for register */
+.register-container {
+  background: rgba(1, 1, 15, 0.575);
+  backdrop-filter: blur(80px);
+  padding: 2.5rem;
+  border-radius: 30px;
+  width: 100%;
+  max-width: 500px; /* Wider than login */
+  color: white;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.register-form {
+  max-height: none;
+  overflow-y: auto;
+  width: 100%;
 }
 
 .form-group {
@@ -184,6 +203,8 @@
 .register-form {
   max-height: none;
   overflow-y: auto;
+  max-width: 500px; /* Increased width for register form */
+  width: 100%;
 }
 
 .register-form select {

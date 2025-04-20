@@ -5,9 +5,8 @@
   padding: 2rem;
 }
 
-.manage-roles-header {
-  margin-bottom: 2rem;
-  text-align: center;
+.manage-roles-container h2 {
+  margin-bottom: 1.5rem;
   color: white;
 }
 
@@ -32,163 +31,37 @@
   width: 100%;
 }
 
-.role-info {
+.user-details {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.role-name {
+.user-name {
   font-size: 1.1rem;
-  font-weight: 500;
 }
 
-.role-description {
+.user-email {
   color: #aaa;
   font-size: 0.9rem;
 }
 
-.role-permissions {
-  color: #30c645;
-  font-size: 0.9rem;
-}
-
-.role-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.edit-button {
-  background: none;
-  border: none;
-  color: #3498db;
-  cursor: pointer;
-  padding: 0.5rem;
-  transition: color 0.2s ease;
-}
-
-.edit-button:hover {
-  color: #2980b9;
-}
-
-.delete-button {
-  background: none;
-  border: none;
-  color: #ff4444;
-  cursor: pointer;
-  padding: 0.5rem;
-  transition: color 0.2s ease;
-}
-
-.delete-button:hover {
-  color: #ff0000;
-}
-
-.add-role-button {
-  padding: 0.8rem;
-  background-color: #30c645;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 150px;
-  margin-top: 1rem;
-  transition: background-color 0.2s ease;
-}
-
-.add-role-button:hover {
-  background-color: #28a33a;
-}
-
-.role-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-  max-width: 800px;
-  background: rgba(1, 1, 15, 0.575);
-  backdrop-filter: blur(10px);
-  padding: 1.5rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-group label {
-  color: white;
-  font-size: 0.9rem;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-  padding: 0.8rem;
+.role-select {
+  padding: 0.6rem;
   border: none;
   border-radius: 4px;
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.form-group select option {
+.role-select:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.role-select option {
   background-color: #1a1a1a;
-}
-
-.checkbox-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.checkbox-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: white;
-}
-
-.form-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.submit-button {
-  padding: 0.8rem;
-  background-color: #30c645;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  flex: 1;
-  transition: background-color 0.2s ease;
-}
-
-.submit-button:hover {
-  background-color: #28a33a;
-}
-
-.cancel-button {
-  padding: 0.8rem;
-  background-color: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  flex: 1;
-  transition: background-color 0.2s ease;
-}
-
-.cancel-button:hover {
-  background-color: #5a6268;
 }
 
 .error-message {
@@ -219,7 +92,7 @@
   color: #666;
 }
 
-.no-roles {
+.no-users {
   text-align: center;
   padding: 2rem;
   color: #666;
@@ -227,4 +100,29 @@
   border-radius: 8px;
   width: 100%;
   max-width: 800px;
+}
+
+.refresh-button {
+  padding: 0.8rem;
+  background-color: #30c645;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 150px;
+  transition: background-color 0.2s ease;
+  margin-top: 1rem;
+}
+
+.refresh-button:hover {
+  background-color: #28a33a;
+}
+
+.refresh-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }

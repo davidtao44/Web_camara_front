@@ -41,6 +41,7 @@ function ManageRoles() {
     }
   };
 
+  // Remove the comment line that says "Update the handleRoleChange function..."
   const handleRoleChange = async (userId, newRole) => {
     try {
       setSuccessMessage('');
@@ -53,16 +54,21 @@ function ManageRoles() {
         setError('No estás autenticado. Por favor inicia sesión nuevamente.');
         return;
       }
-
+  
+      console.log(`Actualizando rol de usuario ${userId} a ${newRole}`);
+  
       // Call the backend API to update the user's role
-      await axios.patch(`http://localhost:8000/users/${userId}/role`, 
-        { role: newRole },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+      const response = await axios({
+        method: 'PATCH',
+        url: `http://localhost:8000/users/${userId}/role`,
+        data: { role: newRole },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
-      );
+      });
+      
+      console.log('Response:', response.data);
       
       // Update the local state
       setUsers(users.map(user => 
