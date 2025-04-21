@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './UserList.css';
+import { API_BASE_URL } from '../utils/apiConfig';
 
 function UserList() {
   const [users, setUsers] = useState([]);
@@ -24,7 +25,7 @@ function UserList() {
       }
 
       // Call the backend API to get all users
-      const response = await axios.get('http://localhost:8000/users/', {
+      const response = await axios.get(`${API_BASE_URL}/users/`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

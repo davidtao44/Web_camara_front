@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './AddUser.css';
+import { API_BASE_URL } from '../utils/apiConfig';
 
 function AddUser() {
   const [newUser, setNewUser] = useState({
@@ -32,7 +33,7 @@ function AddUser() {
       }
 
       // Call the backend API to create a new user
-      const response = await axios.post('http://localhost:8000/users/', {
+      const response = await axios.post(`${API_BASE_URL}/users/`, {
         username: newUser.username,
         email: newUser.email,
         password: newUser.password,
