@@ -19,7 +19,7 @@ function Login({ onLogin }) {
     
     try {
       // Call the backend API to authenticate the user
-      const response = await axios.post(`${API_BASE_URL}/users/token`, 
+      const response = await axios.post(`${API_BASE_URL}/token`, 
         new URLSearchParams({
           'username': username,
           'password': password
