@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../assets/images/logo2-2.png';
 import './Login.css';
+import { API_BASE_URL } from '../utils/apiConfig';
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState('');
@@ -18,7 +19,7 @@ function Login({ onLogin }) {
     
     try {
       // Call the backend API to authenticate the user
-      const response = await axios.post('http://localhost:8000/token', 
+      const response = await axios.post(`${API_BASE_URL}/users/token`, 
         new URLSearchParams({
           'username': username,
           'password': password

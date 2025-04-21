@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ManageRoles.css';
+import { API_BASE_URL } from '../utils/apiConfig'; // Import the base URL
 
 function ManageRoles() {
   const [users, setUsers] = useState([]);
@@ -25,13 +26,13 @@ function ManageRoles() {
         return;
       }
 
-      // Call the backend API to get all users
-      const response = await axios.get('http://localhost:8000/users/', {
+      // Call the backend API to get all users using the base URL
+      const response = await axios.get(`${API_BASE_URL}/users/`, { // Use template literal with API_BASE_URL
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       setUsers(response.data);
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
@@ -41,7 +42,6 @@ function ManageRoles() {
     }
   };
 
-  // Remove the comment line that says "Update the handleRoleChange function..."
   const handleRoleChange = async (userId, newRole) => {
     try {
       setSuccessMessage('');
@@ -57,10 +57,10 @@ function ManageRoles() {
   
       console.log(`Actualizando rol de usuario ${userId} a ${newRole}`);
   
-      // Call the backend API to update the user's role
+      // Call the backend API to update the user's role using the base URL
       const response = await axios({
         method: 'PATCH',
-        url: `http://localhost:8000/users/${userId}/role`,
+        url: `${API_BASE_URL}/users/${userId}/role`, // Use template literal with API_BASE_URL
         data: { role: newRole },
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -70,18 +70,16 @@ function ManageRoles() {
       
       console.log('Response:', response.data);
       
-      // Update the local state
-      setUsers(users.map(user => 
+      setUsers(users.map(user =>
         user.id === userId ? { ...user, role: newRole } : user
       ));
-      
+
       setSuccessMessage(`Rol actualizado correctamente para el usuario`);
-      
-      // Clear success message after 3 seconds
+
       setTimeout(() => {
         setSuccessMessage('');
       }, 3000);
-      
+
     } catch (error) {
       console.error('Error al actualizar rol:', error);
       setError(error.response?.data?.detail || 'Error al actualizar el rol del usuario');

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../assets/images/logo2-2.png';
 import './Login.css'; // Reusing the same CSS file as Login
+import { API_BASE_URL } from '../utils/apiConfig';
 
 function Register() {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ function Register() {
 
     try {
       // Call the backend API to register the user
-      const response = await axios.post('http://localhost:8000/users/', {
+      const response = await axios.post(`${API_BASE_URL}/users/`, {
         username: formData.username,
         email: formData.email,
         password: formData.password,
