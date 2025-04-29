@@ -14,9 +14,9 @@ function Dashboard({ userRole }) {
   // Update this mapping as you add more cameras to MediaMTX
   const cameraStreamMapping = {
     // Firestore ID : MediaMTX path
-    'aKxbATH3Um1RzQSrCvxa': 'camara',
-    'camera2Id': 'camara2',
-    'camera3Id': 'camara3',
+    // 'aKxbATH3Um1RzQSrCvxa': 'camara',
+    // 'camera2Id': 'camara2',
+    // 'camera3Id': 'camara3',
     // Add more mappings as needed
     
     // For mock cameras (by ID number)
