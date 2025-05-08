@@ -6,8 +6,10 @@ import CameraFeedPlayer from './CameraFeedPlayer';
 function Dashboard({ userRole }) {
   const [cameras, setCameras] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [gridLayout, setGridLayout] = useState('2x2'); // Opciones: '1x1', '2x2', '2x3'
+  const [gridLayout, setGridLayout] = useState('2x2');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedCamera, setSelectedCamera] = useState(null);
 
   // This mapping connects camera IDs from Firestore to MediaMTX path names
   const cameraStreamMapping = {
@@ -105,6 +107,120 @@ function Dashboard({ userRole }) {
     setMenuOpen(false);
   };
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return (
+          <div className="cameras-grid" style={{ 
+            display: 'grid', 
+            gridTemplateColumns: gridConfig.gridTemplateColumns,
+            gridTemplateRows: gridConfig.gridTemplateRows,
+            gap: '4px',
+            flex: 1,
+            width: '100%',
+            margin: 0,
+            padding: 0,
+            backgroundColor: '#fff'
+          }}>
+            {visibleCameras.map(camera => (
+              <div 
+                key={camera.id} 
+                className="camera-card"
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  borderRadius: 0,
+                  boxShadow: 'none',
+                  height: '100%',
+                  border: '2px solid #fff'
+                }}
+              >
+                <div className="camera-feed" style={{ 
+                  height: '100%', 
+                  position: 'relative',
+                  margin: 0,
+                  padding: 0
+                }}>
+                  {camera.status === 'active' ? (
+                    <CameraFeedPlayer camera={camera} cameraStreamMapping={cameraStreamMapping} />
+                  ) : (
+                    <div className="camera-placeholder" style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '100%',
+                      backgroundColor: '#000'
+                    }}>
+                      <i className="fas fa-video-slash" style={{ fontSize: '3rem', color: '#555' }}></i>
+                    </div>
+                  )}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '10px',
+                    color: 'white',
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    padding: '5px',
+                    borderRadius: '3px',
+                    fontSize: '0.8rem'
+                  }}>
+                    {camera.name} - {camera.location}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+      case 'single-camera':
+        return (
+          <div className="single-camera-view" style={{
+            height: 'calc(100vh - 100px)',
+            padding: '20px'
+          }}>
+            <select 
+              value={selectedCamera || ''} 
+              onChange={(e) => setSelectedCamera(e.target.value)}
+              style={{
+                marginBottom: '20px',
+                padding: '8px',
+                borderRadius: '4px'
+              }}
+            >
+              <option value="">Seleccione una cámara</option>
+              {cameras.map(camera => (
+                <option key={camera.id} value={camera.id}>
+                  {camera.name} - {camera.location}
+                </option>
+              ))}
+            </select>
+            {selectedCamera && (
+              <div style={{ height: 'calc(100% - 60px)' }}>
+                <CameraFeedPlayer 
+                  camera={cameras.find(c => c.id === parseInt(selectedCamera))} 
+                  cameraStreamMapping={cameraStreamMapping}
+                />
+              </div>
+            )}
+          </div>
+        );
+      case 'analytics':
+        return (
+          <div className="analytics-view" style={{
+            height: 'calc(100vh - 100px)',
+            padding: '20px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <h2>Análisis de Cámaras</h2>
+            {/* Aquí puedes agregar tus gráficos y análisis */}
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="dashboard-container" style={{ 
       padding: 0,
@@ -114,32 +230,84 @@ function Dashboard({ userRole }) {
       height: '100vh',
       position: 'relative'
     }}>
-      {/* Botón para abrir el menú desplegable */}
+      {/* Tabs Navigation */}
       <div style={{
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
-        zIndex: 1000
+        display: 'flex',
+        padding: '10px',
+        backgroundColor: '#f5f5f5',
+        borderBottom: '1px solid #ddd'
       }}>
-        <button 
-          onClick={() => setMenuOpen(!menuOpen)}
+        <button
+          onClick={() => setActiveTab('dashboard')}
           style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            backgroundColor: '#333',
-            color: 'white',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            fontSize: '18px'
+            padding: '10px 20px',
+            marginRight: '10px',
+            backgroundColor: activeTab === 'dashboard' ? '#4CAF50' : '#fff',
+            color: activeTab === 'dashboard' ? '#fff' : '#333',
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            cursor: 'pointer'
           }}
         >
-          <i className="fas fa-th"></i>
+          Dashboard
+        </button>
+        <button
+          onClick={() => setActiveTab('single-camera')}
+          style={{
+            padding: '10px 20px',
+            marginRight: '10px',
+            backgroundColor: activeTab === 'single-camera' ? '#4CAF50' : '#fff',
+            color: activeTab === 'single-camera' ? '#fff' : '#333',
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Cámara Individual
+        </button>
+        <button
+          onClick={() => setActiveTab('analytics')}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: activeTab === 'analytics' ? '#4CAF50' : '#fff',
+            color: activeTab === 'analytics' ? '#fff' : '#333',
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Análisis
         </button>
       </div>
+
+      {/* Layout Menu Button */}
+      {activeTab === 'dashboard' && (
+        <div style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          zIndex: 1000
+        }}>
+          <button 
+            onClick={() => setMenuOpen(!menuOpen)}
+            style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              backgroundColor: '#333',
+              color: 'white',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              fontSize: '18px'
+            }}
+          >
+            <i className="fas fa-th"></i>
+          </button>
+        </div>
+      )}
 
       {/* Menú desplegable */}
       {menuOpen && (
@@ -210,65 +378,7 @@ function Dashboard({ userRole }) {
           <p>Cargando datos...</p>
         </div>
       ) : (
-        <div className="cameras-grid" style={{ 
-          display: 'grid', 
-          gridTemplateColumns: gridConfig.gridTemplateColumns,
-          gridTemplateRows: gridConfig.gridTemplateRows,
-          gap: '4px',
-          flex: 1,
-          width: '100%',
-          margin: 0,
-          padding: 0,
-          backgroundColor: '#fff'
-        }}>
-          {visibleCameras.map(camera => (
-            <div 
-              key={camera.id} 
-              className="camera-card"
-              style={{
-                margin: 0,
-                padding: 0,
-                borderRadius: 0,
-                boxShadow: 'none',
-                height: '100%',
-                border: '2px solid #fff'
-              }}
-            >
-              <div className="camera-feed" style={{ 
-                height: '100%', 
-                position: 'relative',
-                margin: 0,
-                padding: 0
-              }}>
-                {camera.status === 'active' ? (
-                  <CameraFeedPlayer camera={camera} cameraStreamMapping={cameraStreamMapping} />
-                ) : (
-                  <div className="camera-placeholder" style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100%',
-                    backgroundColor: '#000'
-                  }}>
-                    <i className="fas fa-video-slash" style={{ fontSize: '3rem', color: '#555' }}></i>
-                  </div>
-                )}
-                <div style={{
-                  position: 'absolute',
-                  bottom: '10px',
-                  left: '10px',
-                  color: 'white',
-                  backgroundColor: 'rgba(0,0,0,0.5)',
-                  padding: '5px',
-                  borderRadius: '3px',
-                  fontSize: '0.8rem'
-                }}>
-                  {camera.name} - {camera.location}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        renderTabContent()
       )}
     </div>
   );
