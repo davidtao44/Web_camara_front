@@ -1,24 +1,16 @@
 import { useState, useEffect } from 'react';
 import './Dashboard.css';
-import Hls from 'hls.js';
 import axios from 'axios';
+import CameraFeedPlayer from './CameraFeedPlayer';
 
 function Dashboard({ userRole }) {
   const [cameras, setCameras] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCamera, setSelectedCamera] = useState(null);
-  const [poweringOff, setPoweringOff] = useState(false);
-  const [poweringOn, setPoweringOn] = useState(false);
+  const [gridLayout, setGridLayout] = useState('2x2'); // Opciones: '1x1', '2x2', '2x3'
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // This mapping connects camera IDs from Firestore to MediaMTX path names
-  // Update this mapping as you add more cameras to MediaMTX
   const cameraStreamMapping = {
-    // Firestore ID : MediaMTX path
-    // 'aKxbATH3Um1RzQSrCvxa': 'camara',
-    // 'camera2Id': 'camara2',
-    // 'camera3Id': 'camara3',
-    // Add more mappings as needed
-    
     // For mock cameras (by ID number)
     '1': 'camara',
     '2': 'camara2',
@@ -42,8 +34,8 @@ function Dashboard({ userRole }) {
               name: cam.name,
               location: cam.location,
               status: cam.isActive ? 'active' : 'inactive',
-              lastActivity: 'N/A', // You might want to add this field to your API
-              api_url: cam.api_url // Store the RTSP URL
+              lastActivity: 'N/A',
+              api_url: cam.api_url
             }));
             setCameras(apiCameras);
             setLoading(false);
@@ -54,10 +46,9 @@ function Dashboard({ userRole }) {
         }
 
         // Fallback to mock data if API fails
-        // Mock data for cameras
         const mockCameras = [
           { id: 1, name: 'Cámara 1', location: 'Entrada Principal', status: 'active', lastActivity: '2 min ago' },
-          { id: 2, name: 'Cámara 2', location: 'Estacionamiento', status: 'inactive', lastActivity: '1 hr ago' },
+          { id: 2, name: 'Cámara 2', location: 'Estacionamiento', status: 'active', lastActivity: '1 hr ago' },
           { id: 3, name: 'Cámara 3', location: 'Pasillo A', status: 'inactive', lastActivity: '5 min ago' },
           { id: 4, name: 'Cámara 4', location: 'Almacén', status: 'inactive', lastActivity: '2 days ago' },
           { id: 5, name: 'Cámara 5', location: 'Oficina Principal', status: 'inactive', lastActivity: 'Just now' },
@@ -74,282 +65,209 @@ function Dashboard({ userRole }) {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (selectedCamera && selectedCamera.status === 'active') {
-      const video = document.getElementById('camera-video');
-      if (!video || !Hls.isSupported()) {
-        console.error('Video element not found or HLS not supported');
-        return;
-      }
-
-      // Clean up any existing HLS instance
-      let hls = new Hls();
-      
-      // Get the MediaMTX path for this camera
-      const cameraId = selectedCamera.id.toString();
-      const cameraStreamId = cameraStreamMapping[cameraId] || 'camara'; // Default to 'camara' if not found
-      
-      // Build the HLS URL
-      const streamUrl = `http://localhost:8888/${cameraStreamId}/index.m3u8`;
-      console.log(`Loading stream for camera ${selectedCamera.name} (ID: ${cameraId}) from: ${streamUrl}`);
-      
-      // Load the stream
-      hls.loadSource(streamUrl);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch(e => {
-          console.warn('Auto-play prevented:', e);
-        });
-      });
-      
-      // Handle errors
-      hls.on(Hls.Events.ERROR, (event, data) => {
-        if (data.fatal) {
-          console.error('Fatal HLS error:', data);
-          hls.destroy();
-        }
-      });
-      
-      return () => {
-        hls.destroy();
-      };
-    }
-  }, [selectedCamera]);
-
-  const handleCameraClick = (camera) => {
-    setSelectedCamera(camera);
-  };
-
-  const closeModal = () => {
-    setSelectedCamera(null);
-  };
-
-  // Function to handle powering off a camera
-  const handlePowerOff = async () => {
-    if (!selectedCamera) return;
-    
-    setPoweringOff(true);
-    
-    try {
-      // For real implementation, uncomment this code to call your backend API
-      /*
-      await axios.post(`http://localhost:8000/cameras/${selectedCamera.id}/power`, {
-        action: 'off'
-      });
-      */
-      
-      // For now, simulate API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Update camera status in the local state
-      setCameras(prevCameras => 
-        prevCameras.map(cam => 
-          cam.id === selectedCamera.id 
-            ? { ...cam, status: 'inactive' } 
-            : cam
-        )
-      );
-      
-      // Show success message
-      alert(`Cámara ${selectedCamera.name} apagada exitosamente.`);
-      
-      // Close the modal
-      closeModal();
-    } catch (error) {
-      console.error('Error powering off camera:', error);
-      alert('Error al apagar la cámara. Por favor intente nuevamente.');
-    } finally {
-      setPoweringOff(false);
+  // Función para obtener la configuración de la cuadrícula según el diseño seleccionado
+  const getGridConfig = () => {
+    switch (gridLayout) {
+      case '1x1':
+        return {
+          gridTemplateColumns: '1fr',
+          gridTemplateRows: '1fr',
+          maxCameras: 1
+        };
+      case '2x2':
+        return {
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridTemplateRows: 'repeat(2, 1fr)',
+          maxCameras: 4
+        };
+      case '2x3':
+        return {
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateRows: 'repeat(2, 1fr)',
+          maxCameras: 6
+        };
+      default:
+        return {
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridTemplateRows: 'repeat(2, 1fr)',
+          maxCameras: 4
+        };
     }
   };
 
-  // Function to handle powering on a camera
-  const handlePowerOn = async () => {
-    if (!selectedCamera) return;
-    
-    setPoweringOn(true);
-    
-    try {
-      // For real implementation, uncomment this code to call your backend API
-      /*
-      await axios.post(`http://localhost:8000/cameras/${selectedCamera.id}/power`, {
-        action: 'on'
-      });
-      */
-      
-      // For now, simulate API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Update camera status in the local state
-      setCameras(prevCameras => 
-        prevCameras.map(cam => 
-          cam.id === selectedCamera.id 
-            ? { ...cam, status: 'active' } 
-            : cam
-        )
-      );
-      
-      // Update the selected camera to reflect the new status
-      setSelectedCamera({
-        ...selectedCamera,
-        status: 'active'
-      });
-      
-      // Show success message
-      alert(`Cámara ${selectedCamera.name} encendida exitosamente.`);
-    } catch (error) {
-      console.error('Error powering on camera:', error);
-      alert('Error al encender la cámara. Por favor intente nuevamente.');
-    } finally {
-      setPoweringOn(false);
-    }
+  const gridConfig = getGridConfig();
+  // Limitar el número de cámaras según la configuración de la cuadrícula
+  const visibleCameras = cameras.slice(0, gridConfig.maxCameras);
+
+  // Función para cambiar el diseño y cerrar el menú
+  const changeLayout = (layout) => {
+    setGridLayout(layout);
+    setMenuOpen(false);
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container" style={{ 
+      padding: 0,
+      backgroundColor: '#fff',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100vh',
+      position: 'relative'
+    }}>
+      {/* Botón para abrir el menú desplegable */}
+      <div style={{
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        zIndex: 1000
+      }}>
+        <button 
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            backgroundColor: '#333',
+            color: 'white',
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            fontSize: '18px'
+          }}
+        >
+          <i className="fas fa-th"></i>
+        </button>
+      </div>
+
+      {/* Menú desplegable */}
+      {menuOpen && (
+        <div style={{
+          position: 'absolute',
+          top: '60px',
+          right: '10px',
+          backgroundColor: '#333',
+          borderRadius: '4px',
+          padding: '10px',
+          zIndex: 1000,
+          boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
+        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px'
+          }}>
+            <button 
+              onClick={() => changeLayout('1x1')}
+              style={{
+                padding: '8px 15px',
+                backgroundColor: gridLayout === '1x1' ? '#4CAF50' : '#555',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              1 Cámara
+            </button>
+            <button 
+              onClick={() => changeLayout('2x2')}
+              style={{
+                padding: '8px 15px',
+                backgroundColor: gridLayout === '2x2' ? '#4CAF50' : '#555',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              2x2 (4 Cámaras)
+            </button>
+            <button 
+              onClick={() => changeLayout('2x3')}
+              style={{
+                padding: '8px 15px',
+                backgroundColor: gridLayout === '2x3' ? '#4CAF50' : '#555',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              2x3 (6 Cámaras)
+            </button>
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div className="loading">
           <i className="fas fa-spinner fa-spin"></i>
           <p>Cargando datos...</p>
         </div>
       ) : (
-        <>
-          <div className="dashboard-header">
-            <h1>Panel de Control</h1>
-            <div className="dashboard-stats">
-              <div className="stat-card">
-                <i className="fas fa-video"></i>
-                <div className="stat-info">
-                  <h3>{cameras.filter(c => c.status === 'active').length}</h3>
-                  <p>Cámaras Activas</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="dashboard-content-full">
-            <div className="cameras-section">
-              <div className="section-header">
-                <h2>Cámaras de Vigilancia</h2>
-                <div className="section-actions">
-                  <button className="refresh-btn" onClick={() => window.location.reload()}>
-                    <i className="fas fa-sync-alt"></i> Actualizar
-                  </button>
-                </div>
-              </div>
-              <div className="cameras-grid">
-                {cameras.map(camera => (
-                  <div 
-                    key={camera.id} 
-                    className={`camera-card ${camera.status}`}
-                    onClick={() => handleCameraClick(camera)}
-                  >
-                    <div className="camera-feed">
-                      <div className="camera-placeholder">
-                        <i className="fas fa-video"></i>
-                      </div>
-                      <div className="camera-status">
-                        {camera.status === 'active' ? 'Activa' : 'Inactiva'}
-                      </div>
-                    </div>
-                    <div className="camera-info">
-                      <h3>{camera.name}</h3>
-                      <p><i className="fas fa-map-marker-alt"></i> {camera.location}</p>
-                      <p><i className="fas fa-clock"></i> {camera.lastActivity || 'N/A'}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-
-      {selectedCamera && (
-        <div className="camera-modal">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h2>{selectedCamera.name}</h2>
-              <button className="close-btn" onClick={closeModal}>
-                <i className="fas fa-times"></i>
-              </button>
-            </div>
-            <div className="modal-body">
-             <div className="camera-live-feed">
-                <video
-                  id="camera-video"
-                  playsInline
-                  controls
-                  controlsList="nodownload noremoteplayback"
-                  disablePictureInPicture
-                  style={{ width: '100%', maxHeight: '480px' }}
-                />
-              </div>
-              <div className="camera-details">
-                <div className="detail-item">
-                  <span className="label">Ubicación:</span>
-                  <span className="value">{selectedCamera.location}</span>
-                </div>
-                <div className="detail-item">
-                  <span className="label">Estado:</span>
-                  <span className={`value status-${selectedCamera.status}`}>
-                    {selectedCamera.status === 'active' ? 'Activa' : 'Inactiva'}
-                  </span>
-                </div>
-                <div className="detail-item">
-                  <span className="label">Última actividad:</span>
-                  <span className="value">{selectedCamera.lastActivity || 'N/A'}</span>
-                </div>
-                {selectedCamera.api_url && (
-                  <div className="detail-item">
-                    <span className="label">RTSP URL:</span>
-                    <span className="value">{selectedCamera.api_url}</span>
+        <div className="cameras-grid" style={{ 
+          display: 'grid', 
+          gridTemplateColumns: gridConfig.gridTemplateColumns,
+          gridTemplateRows: gridConfig.gridTemplateRows,
+          gap: '4px',
+          flex: 1,
+          width: '100%',
+          margin: 0,
+          padding: 0,
+          backgroundColor: '#fff'
+        }}>
+          {visibleCameras.map(camera => (
+            <div 
+              key={camera.id} 
+              className="camera-card"
+              style={{
+                margin: 0,
+                padding: 0,
+                borderRadius: 0,
+                boxShadow: 'none',
+                height: '100%',
+                border: '2px solid #fff'
+              }}
+            >
+              <div className="camera-feed" style={{ 
+                height: '100%', 
+                position: 'relative',
+                margin: 0,
+                padding: 0
+              }}>
+                {camera.status === 'active' ? (
+                  <CameraFeedPlayer camera={camera} cameraStreamMapping={cameraStreamMapping} />
+                ) : (
+                  <div className="camera-placeholder" style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100%',
+                    backgroundColor: '#000'
+                  }}>
+                    <i className="fas fa-video-slash" style={{ fontSize: '3rem', color: '#555' }}></i>
                   </div>
                 )}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '10px',
+                  left: '10px',
+                  color: 'white',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  padding: '5px',
+                  borderRadius: '3px',
+                  fontSize: '0.8rem'
+                }}>
+                  {camera.name} - {camera.location}
+                </div>
               </div>
             </div>
-            <div className="modal-footer">
-              {userRole === 'administrador' && (
-                <>
-                  {selectedCamera.status === 'active' && (
-                    <button 
-                      className="action-btn danger"
-                      onClick={handlePowerOff}
-                      disabled={poweringOff}
-                    >
-                      {poweringOff ? (
-                        <>
-                          <i className="fas fa-spinner fa-spin"></i> Apagando...
-                        </>
-                      ) : (
-                        <>
-                          <i className="fas fa-power-off"></i> Apagar
-                        </>
-                      )}
-                    </button>
-                  )}
-                  
-                  {selectedCamera.status === 'inactive' && (
-                    <button 
-                      className="action-btn success"
-                      onClick={handlePowerOn}
-                      disabled={poweringOn}
-                    >
-                      {poweringOn ? (
-                        <>
-                          <i className="fas fa-spinner fa-spin"></i> Encendiendo...
-                        </>
-                      ) : (
-                        <>
-                          <i className="fas fa-play-circle"></i> Encender
-                        </>
-                      )}
-                    </button>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
+          ))}
         </div>
       )}
     </div>

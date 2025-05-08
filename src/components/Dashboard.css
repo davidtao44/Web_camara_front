@@ -160,16 +160,40 @@
   transition: transform 0.2s, box-shadow 0.2s;
   width: 100%;
   box-sizing: border-box;
+  position: relative; /* Añadido para que .camera-info se posicione correctamente si .camera-feed no lo hace */
 }
 
 /* Increase the camera feed height for better visibility */
 .camera-feed {
   position: relative;
-  background-color: #000;
-  height: 220px;
+  background-color: #000; /* Fondo negro para el área del video */
+  height: 220px; /* Altura principal del feed */
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden; /* Para asegurar que el video no se desborde */
+}
+
+.camera-feed video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+.camera-placeholder {
+  color: #555;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.camera-placeholder i {
+  font-size: 3rem; 
+  margin-bottom: 8px;
 }
 
 .camera-card:hover {
@@ -185,10 +209,11 @@
   border-left: 3px solid #f57f17;
 }
 
+/* Estas reglas duplicadas/conflictivas se eliminan:
 .camera-feed {
   position: relative;
   background-color: #000;
-  height: 150px;
+  height: 150px; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -202,6 +227,7 @@
 .camera-placeholder i {
   font-size: 2rem;
 }
+*/
 
 .camera-placeholder.large {
   display: flex;
@@ -223,25 +249,41 @@
   font-size: 0.7rem;
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
+  z-index: 1; /* Para asegurar que esté sobre el video si es necesario */
 }
 
 .camera-info {
-  padding: 15px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 8px 12px; /* Ajustado para superposición */
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0) 100%);
+  color: #fff; /* Color de texto por defecto para la info */
+  box-sizing: border-box;
+  z-index: 1; /* Para asegurar que esté sobre el video */
+  /* Los border-radius de las esquinas inferiores se heredan del .camera-card con overflow:hidden */
 }
 
 .camera-info h3 {
-  margin: 0 0 10px 0;
-  font-size: 1rem;
-  color: #333;
+  margin: 0 0 4px 0; /* Margen ajustado */
+  font-size: 0.9rem; /* Tamaño ajustado */
+  color: #fff; /* Color explícito */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7); /* Sombra para legibilidad */
 }
 
 .camera-info p {
-  margin: 5px 0;
-  color: #666;
-  font-size: 0.85rem;
+  margin: 2px 0; /* Margen ajustado */
+  color: #e0e0e0; /* Color de texto ligeramente más suave o #fff */
+  font-size: 0.75rem; /* Tamaño ajustado */
   display: flex;
   align-items: center;
   gap: 5px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Sombra para legibilidad */
+}
+
+.camera-info p i {
+  color: inherit; /* Hereda el color del párrafo (e0e0e0 o fff) */
 }
 
 .users-list {
