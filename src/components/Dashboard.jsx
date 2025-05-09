@@ -42,9 +42,9 @@ function Dashboard({ userRole }) {
     '1': 'camara',
     '2': 'camara2',
     '3': 'camara3',
-    '4': 'camara',
-    '5': 'camara2',
-    '6': 'camara3',
+    '4': 'camara4',
+    '5': 'camara5',
+    '6': 'camara6',
   };
 
   useEffect(() => {
@@ -76,7 +76,7 @@ function Dashboard({ userRole }) {
         const mockCameras = [
           { id: 1, name: 'Cámara 1', location: 'Entrada Principal', status: 'active', lastActivity: '2 min ago' },
           { id: 2, name: 'Cámara 2', location: 'Estacionamiento', status: 'active', lastActivity: '1 hr ago' },
-          { id: 3, name: 'Cámara 3', location: 'Pasillo A', status: 'inactive', lastActivity: '5 min ago' },
+          { id: 3, name: 'Cámara 3', location: 'Pasillo A', status: 'active', lastActivity: '5 min ago' },
           { id: 4, name: 'Cámara 4', location: 'Almacén', status: 'inactive', lastActivity: '2 days ago' },
           { id: 5, name: 'Cámara 5', location: 'Oficina Principal', status: 'inactive', lastActivity: 'Just now' },
           { id: 6, name: 'Cámara 6', location: 'Sala de Juntas', status: 'inactive', lastActivity: '10 min ago' },
@@ -459,55 +459,39 @@ function Dashboard({ userRole }) {
               <h3 style={{ margin: '0 0 15px 0', color: 'rgb(39, 39, 38)' }}>Personas Identificadas</h3>
               
               {/* Filtros */}
-              <div style={{ marginBottom: '15px' }}>
+              <div style={{ marginBottom: '15px', position: 'relative' }}>
                 <input 
                   type="text" 
                   placeholder="Buscar por nombre..." 
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   style={{
+                    color: '#333',
                     width: '100%',
-                    padding: '8px',
-                    borderRadius: '4px',
-                    border: '1px solid #ddd',
-                    marginBottom: '10px'
+                    padding: '12px 5px 12px 5px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    marginBottom: '10px',
+                    fontSize: '14px',
+                    transition: 'all 0.3s ease',
+                    backgroundColor: '#f8f9fa',
+                    outline: 'none',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
+                    '&:focus': {
+                      border: '2px solid #4CAF50',
+                      boxShadow: '0 2px 8px rgba(76,175,80,0.1)',
+                      backgroundColor: '#fff'
+                    }
                   }}
                 />
-                
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.8rem' }}>
-                      Desde:
-                    </label>
-                    <input 
-                      type="date" 
-                      value={dateRange.start}
-                      onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        borderRadius: '4px',
-                        border: '1px solid #ddd'
-                      }}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.8rem' }}>
-                      Hasta:
-                    </label>
-                    <input 
-                      type="date" 
-                      value={dateRange.end}
-                      onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        borderRadius: '4px',
-                        border: '1px solid #ddd'
-                      }}
-                    />
-                  </div>
-                </div>
+                <i className="fas fa-search" style={{
+                  position: 'absolute',
+                  right: '7px',
+                  top: '40%',
+                  transform: 'translateY(-50%)',
+                  color: '#9e9e9e',
+                  fontSize: '14px'
+                }}></i>
               </div>
               
               {/* Lista de personas */}
