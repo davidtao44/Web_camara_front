@@ -268,7 +268,7 @@
 .camera-info h3 {
   margin: 0 0 4px 0; /* Margen ajustado */
   font-size: 0.9rem; /* Tamaño ajustado */
-  color: #fff; /* Color explícito */
+  color:rgb(39, 39, 38); /* Color explícito */
   text-shadow: 1px 1px 2px rgba(0,0,0,0.7); /* Sombra para legibilidad */
 }
 
