@@ -36,47 +36,21 @@ function Dashboard({ userRole }) {
     end: ''
   });
 
-  // This mapping connects camera IDs from Firestore to MediaMTX path names
+  // Mapeo de cámaras actualizado
   const cameraStreamMapping = {
-    // For mock cameras (by ID number)
     '1': 'camara',
     '2': 'camara2',
-    '3': 'camara3',
-    '4': 'camara4',
-    '5': 'camara5',
-    '6': 'camara6',
   };
-
+  
   useEffect(() => {
-    // Fetch real cameras from backend
+    // Fetch cameras data
     const fetchData = async () => {
       try {
-        // Try to fetch real cameras from backend
-        try {
-          const response = await axios.get('http://localhost:8000/cameras/');
-          if (response.data && response.data.length > 0) {
-            // Transform API response to match our camera format
-            const apiCameras = response.data.map(cam => ({
-              id: cam.id,
-              name: cam.name,
-              location: cam.location,
-              status: cam.isActive ? 'active' : 'inactive',
-              lastActivity: 'N/A',
-              api_url: cam.api_url
-            }));
-            setCameras(apiCameras);
-            setLoading(false);
-            return;
-          }
-        } catch (error) {
-          console.warn('Could not fetch cameras from API, using mock data:', error);
-        }
-
-        // Fallback to mock data if API fails
+        // Usar directamente los datos mock ya que la API no se usa más
         const mockCameras = [
           { id: 1, name: 'Cámara 1', location: 'Entrada Principal', status: 'active', lastActivity: '2 min ago' },
           { id: 2, name: 'Cámara 2', location: 'Estacionamiento', status: 'active', lastActivity: '1 hr ago' },
-          { id: 3, name: 'Cámara 3', location: 'Pasillo A', status: 'active', lastActivity: '5 min ago' },
+          { id: 3, name: 'Cámara 3', location: 'Pasillo A', status: 'inactive', lastActivity: '5 min ago' },
           { id: 4, name: 'Cámara 4', location: 'Almacén', status: 'inactive', lastActivity: '2 days ago' },
           { id: 5, name: 'Cámara 5', location: 'Oficina Principal', status: 'inactive', lastActivity: 'Just now' },
           { id: 6, name: 'Cámara 6', location: 'Sala de Juntas', status: 'inactive', lastActivity: '10 min ago' },
@@ -350,7 +324,8 @@ function Dashboard({ userRole }) {
               width: '100%',
               margin: 0,
               padding: 0,
-              backgroundColor: '#fff'
+              backgroundColor: '#fff',
+              height: 'calc(100vh - 200px)' // Altura fija para el grid
             }}>
               {visibleCameras.map(camera => (
                 <div 
@@ -362,14 +337,18 @@ function Dashboard({ userRole }) {
                     borderRadius: 0,
                     boxShadow: 'none',
                     height: '100%',
-                    border: '2px solid #fff'
+                    border: '2px solid #fff',
+                    overflow: 'hidden', // Evita que el contenido se desborde
+                    display: 'flex',    // Usa flexbox para centrar el contenido
+                    flexDirection: 'column'
                   }}
                 >
                   <div className="camera-feed" style={{ 
-                    height: '100%', 
+                    flex: 1,           // Ocupa todo el espacio disponible
                     position: 'relative',
                     margin: 0,
-                    padding: 0
+                    padding: 0,
+                    minHeight: '100%'  // Asegura altura mínima
                   }}>
                     {camera.status === 'active' ? (
                       <CameraFeedPlayer camera={camera} cameraStreamMapping={cameraStreamMapping} />
@@ -392,7 +371,8 @@ function Dashboard({ userRole }) {
                       backgroundColor: 'rgba(0,0,0,0.5)',
                       padding: '5px',
                       borderRadius: '3px',
-                      fontSize: '0.8rem'
+                      fontSize: '0.8rem',
+                      zIndex: 10 // Asegura que esté por encima del iframe
                     }}>
                       {camera.name} - {camera.location}
                     </div>
