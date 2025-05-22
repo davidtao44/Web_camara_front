@@ -9,7 +9,6 @@ function CameraFeedPlayer({ camera }) {
       <div className="camera-placeholder" style={{ 
         width: '100%', 
         height: '100%', 
-        minHeight: '400px',
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'center' 
@@ -30,7 +29,6 @@ function CameraFeedPlayer({ camera }) {
       <div className="camera-placeholder" style={{ 
         width: '100%', 
         height: '100%', 
-        minHeight: '400px',
         display: 'flex', 
         flexDirection: 'column', 
         alignItems: 'center', 
@@ -49,29 +47,23 @@ function CameraFeedPlayer({ camera }) {
   }
 
   return (
-    <div className="camera-container" style={{ 
+    <div style={{ 
       width: '100%', 
       height: '100%', 
-      minHeight: '400px',
-      aspectRatio: '16/9',
-      overflow: 'hidden',
       position: 'relative',
-      borderRadius: '8px',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+      overflow: 'hidden',
+      backgroundColor: '#000'
     }}>
-      <iframe
+      <img
         src={streamUrl}
         style={{ 
-          position: 'absolute',
-          top: 0,
-          left: 0,
           width: '100%', 
           height: '100%', 
-          border: 'none'
+          objectFit: 'contain',
+          display: 'block'
         }}
-        allowFullScreen={true}
         onError={() => setError(true)}
-        title={`Cámara ${camera.name}`}
+        alt={`Cámara ${camera.name}`}
       />
     </div>
   );
