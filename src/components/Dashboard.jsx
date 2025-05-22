@@ -65,19 +65,40 @@ function Dashboard({ userRole }) {
 
     fetchData();
   }, []);
-
+  
   // Función para obtener datos de alarma
   const fetchAlarmData = async () => {
     setAlarmLoading(true);
     setAlarmError('');
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`${API_BASE_URL}/alarmcamera`, {
+      // Obtener datos para la cámara seleccionada o la primera cámara por defecto
+      const cameraId = selectedCamera || (cameras.length > 0 ? cameras[0].id : 1);
+      
+      // Usar el formato correcto para el endpoint (cam1, cam2, etc.)
+      const cameraEndpoint = `cam${cameraId}`;
+      const response = await axios.get(`http://172.16.2.231:8000/stats/${cameraEndpoint}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      setAlarmData(response.data);
+      
+      // Actualizar el estado con la nueva estructura de datos
+      setAlarmData({
+        stats: {
+          total_detections: response.data.total_detections,
+          unknown_detections: response.data.unrecognized,
+          identified_detections: response.data.recognized,
+          recognition_percentage: response.data.recognition_rate * 100,
+          last_updated: response.data.last_updated,
+          recognized_names: response.data.recognized_names || []
+        },
+        history: response.data.recognized_names.map((name, index) => ({
+          name: name,
+          timestamp: response.data.last_updated,
+          is_unknown: false
+        }))
+      });
     } catch (error) {
       console.error('Error al obtener datos de alarma:', error);
       setAlarmError('Error al obtener datos de alarma. Por favor intente nuevamente.');
@@ -91,14 +112,26 @@ function Dashboard({ userRole }) {
     setAlarmLoading(true);
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.post(`${API_BASE_URL}/alarmcamera/reset`, {}, {
+      const cameraId = selectedCamera || (cameras.length > 0 ? cameras[0].id : 1);
+      
+      // Usar el formato correcto para el endpoint (cam1, cam2, etc.)
+      const cameraEndpoint = `cam${cameraId}`;
+      const response = await axios.post(`http://172.16.2.231:8000/stats/${cameraEndpoint}/reset`, {}, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      
+      // Actualizar el estado con los datos reseteados
       setAlarmData({
-        ...alarmData,
-        stats: response.data.stats,
+        stats: {
+          total_detections: 0,
+          unknown_detections: 0,
+          identified_detections: 0,
+          recognition_percentage: 0,
+          last_updated: new Date().toISOString(),
+          recognized_names: []
+        },
         history: []
       });
       alert('Contadores reiniciados correctamente');
@@ -117,7 +150,7 @@ function Dashboard({ userRole }) {
     // Actualizar datos cada 10 segundos
     const interval = setInterval(() => {
       fetchAlarmData();
-    }, 10000);
+    }, 3000);
     
     return () => clearInterval(interval);
   }, []);
