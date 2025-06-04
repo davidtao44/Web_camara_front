@@ -7,6 +7,16 @@ function Sidebar({ role, onNavigate, onLogout }) {
   return (
     <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
       <div className="sidebar-header">
+        <img 
+          src="/logo2-2.png" 
+          alt="Logo TECON" 
+          style={{ 
+            width: '80%', 
+            maxWidth: '120px', 
+            margin: '0 auto 10px auto',
+            display: 'block'
+          }} 
+        />
         <h3>{role.charAt(0).toUpperCase() + role.slice(1)}</h3>
         <button onClick={() => setIsOpen(!isOpen)} className="toggle-button">
           <i className={`fas fa-chevron-${isOpen ? 'left' : 'right'}`}></i>

@@ -50,9 +50,9 @@ function Dashboard({ userRole }) {
         const mockCameras = [
           { id: 1, name: 'Cámara 1', location: 'Entrada Principal', status: 'active', lastActivity: '2 min ago' },
           { id: 2, name: 'Cámara 2', location: 'Estacionamiento', status: 'active', lastActivity: '1 hr ago' },
-          { id: 3, name: 'Cámara 3', location: 'Pasillo A', status: 'inactive', lastActivity: '5 min ago' },
-          { id: 4, name: 'Cámara 4', location: 'Almacén', status: 'inactive', lastActivity: '2 days ago' },
-          { id: 5, name: 'Cámara 5', location: 'Oficina Principal', status: 'inactive', lastActivity: 'Just now' },
+          { id: 3, name: 'Cámara 3', location: 'Pasillo A', status: 'active', lastActivity: '5 min ago' },
+          { id: 4, name: 'Cámara 4', location: 'Almacén', status: 'active', lastActivity: '2 days ago' },
+          { id: 5, name: 'Cámara 5', location: 'Oficina Principal', status: 'active', lastActivity: 'Just now' },
           { id: 6, name: 'Cámara 6', location: 'Sala de Juntas', status: 'inactive', lastActivity: '10 min ago' },
         ];
         setCameras(mockCameras);
@@ -266,60 +266,74 @@ function Dashboard({ userRole }) {
         return (
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             {/* Contadores en tiempo real */}
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
               margin: '0 0 20px 0',
               padding: '15px',
               backgroundColor: '#f5f5f5',
-              borderRadius: '8px'
+              borderRadius: '8px',
+              flexWrap: 'wrap', // Permite que los elementos se envuelvan si no hay espacio
+              gap: '10px' // Añade espacio entre elementos cuando se envuelven
             }}>
-              <div style={{ 
-                flex: 1, 
-                textAlign: 'center', 
-                padding: '15px', 
+              <div style={{
+                flex: '1 1 200px', // Cambiado a flex-grow y flex-shrink con un ancho base
+                textAlign: 'center',
+                padding: '15px',
                 backgroundColor: '#fff',
-                margin: '0 10px',
+                margin: '0',
                 borderRadius: '8px',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                minHeight: '100px', // Altura mínima para mantener la forma
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center'
               }}>
                 <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>Total Detecciones</h3>
                 <p style={{ fontSize: '24px', fontWeight: 'bold', margin: 0, color: '#4CAF50' }}>
                   {alarmData.stats.total_detections}
                 </p>
               </div>
-              
-              <div style={{ 
-                flex: 1, 
-                textAlign: 'center', 
-                padding: '15px', 
+
+              <div style={{
+                flex: '1 1 200px', // Cambiado a flex-grow y flex-shrink con un ancho base
+                textAlign: 'center',
+                padding: '15px',
                 backgroundColor: '#fff',
-                margin: '0 10px',
+                margin: '0',
                 borderRadius: '8px',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                minHeight: '100px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center'
               }}>
                 <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>No Identificadas</h3>
                 <p style={{ fontSize: '24px', fontWeight: 'bold', margin: 0, color: '#F44336' }}>
                   {alarmData.stats.unknown_detections}
                 </p>
               </div>
-              
-              <div style={{ 
-                flex: 1, 
-                textAlign: 'center', 
-                padding: '15px', 
+
+              <div style={{
+                flex: '1 1 200px', // Cambiado a flex-grow y flex-shrink con un ancho base
+                textAlign: 'center',
+                padding: '15px',
                 backgroundColor: '#fff',
-                margin: '0 10px',
+                margin: '0',
                 borderRadius: '8px',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                minHeight: '100px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center'
               }}>
                 <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>% Reconocimiento</h3>
                 <p style={{ fontSize: '24px', fontWeight: 'bold', margin: 0, color: '#2196F3' }}>
                   {alarmData.stats.recognition_percentage}%
                 </p>
               </div>
-              
-              <button 
+
+              <button
                 onClick={resetAlarmCounters}
                 style={{
                   backgroundColor: '#F44336',
@@ -331,8 +345,10 @@ function Dashboard({ userRole }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  height: '40px',
-                  alignSelf: 'center'
+                  height: '100px', // Altura fija para el botón
+                  flex: '0 0 120px', // Ancho fijo para el botón pero usando flex
+                  alignSelf: 'center',
+                  margin: '0'
                 }}
                 disabled={alarmLoading}
               >
@@ -358,7 +374,8 @@ function Dashboard({ userRole }) {
               margin: 0,
               padding: 0,
               backgroundColor: '#fff',
-              height: 'calc(100vh - 200px)' // Altura fija para el grid
+              height: 'calc(100vh - 280px)', // Reducido de 200px a 280px para hacer los recuadros más pequeños
+              maxHeight: '500px' // Añadido un límite máximo de altura
             }}>
               {visibleCameras.map(camera => (
                 <div 
